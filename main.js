@@ -33,6 +33,26 @@ class BlockChain {
         this.chain.push(newBlock); 
     }
 
+    isChainValid() {
+        for(let i=1; i<this.chain.length; i++) {
+            const currentBlock = this.chain[i];
+            const previousBlock = this.chain[i-1];
+
+            // checking if the data has been modified => then its hash will change
+            if(currentBlock.hash !== currentBlock.calculateHash()) {
+                return false;
+            } 
+
+            // Checking if chain hasn't been broken
+            if(currentBlock.previousHash !== previousBlock.hash) {
+                return false;
+            }
+        }
+
+        // chain is valid
+        return true;
+    }
+
 };
 
 let minimalChain = new BlockChain();
@@ -40,3 +60,9 @@ minimalChain.addBlock(new Block(1, new Date(), {amount: 379}));
 minimalChain.addBlock(new Block(2, new Date(), {amount: 1000}));
 
 console.log(JSON.stringify(minimalChain, null, 4));
+console.log('Is Blockchain Valid? :',minimalChain.isChainValid());
+
+minimalChain.chain[1].data.amount = 400;
+
+console.log(JSON.stringify(minimalChain, null, 4));
+console.log('Is Blockchain Valid? :',minimalChain.isChainValid());
