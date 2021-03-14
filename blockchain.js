@@ -1,20 +1,4 @@
-function User(firstName, lastName, age, gender) {
-	this.firstName = firstName;
-	this.lastName = lastName;
-	this.age = age;
-	this.gender = gender;
-}
-
-var user = new User('ramji', 'rathore', 22, 'male');
-
-User.prototype.emaildomain = 'rmj@gmail.com';
-
-User.prototype.getemailaddress = function () {
-	return this.firstName + ' ' + this.lastName + ' ' + this.emaildomain;
-};
-
-console.log(user.getemailaddress());
-
+const sha256 = require('sha256');
 
 function Blockchain() {
 	this.chain = [];
@@ -37,11 +21,11 @@ Blockchain.prototype.createNewBlock = function (nonce, previousBlockHash, Hash) 
 	return newBlock;
 };
 
-Blockchain.prototype.getLastBlock = () => {
+Blockchain.prototype.getLastBlock = function () {
 	return this.chain[this.chain.length - 1];
 };
 
-Blockchain.prototype.createNewTransaction = (amount, sender, recepient) => {
+Blockchain.prototype.createNewTransaction = function (amount, sender, recepient) {
 
 	const newTransaction = { amount, sender, recepient };
 
@@ -50,5 +34,12 @@ Blockchain.prototype.createNewTransaction = (amount, sender, recepient) => {
 	return this.getLastBlock()['index'] + 1;
 };
 
+Blockchain.prototype.hashBlock = function (previousBlockHash, currentBlockData, nonce) {
+	const dataAsString = previousBlockHash + nonce.toString() + JSON.stringify(currentBlockData);
+
+	const hash = sha256(dataAsString);
+
+	return hash;
+};
 
 module.exports = Blockchain;
